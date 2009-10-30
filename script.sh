@@ -47,7 +47,7 @@ diff out/hamlet_numsort.txt out/hamlet_numsort_local.txt
 wget http://download.wikimedia.org/enwiki/latest/enwiki-latest-all-titles-in-ns0.gz
 gunzip -c enwiki-latest-all-titles-in-ns0.gz | hadoop fs -put - count_example/wiki_titles
 hadoop jar $HADOOP_HOME/hadoop-streaming.jar $PARAMS -mapper mapper.py -reducer reducer_numsort.py -input count_example/wiki_titles -output count_example/wiki_titles_out -file mapper.py -file reducer_numsort.py
-hadoop fs -cat count_example/wiki_titles_out/* | sort -rn | head
+hadoop fs -cat count_example/wiki_titles_out/* | head
 
 # cleanup
 hadoop fs -rmr count_example
