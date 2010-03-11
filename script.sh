@@ -43,11 +43,15 @@ cat hamlet.txt | ./mapper.py | sort | ./reducer_numsort.py | sort -nrk 2 > out/h
 diff out/hamlet_numsort.txt out/hamlet_numsort_local.txt
 
 
-# EXTRA (wikipedia)
-wget http://download.wikimedia.org/enwiki/latest/enwiki-latest-all-titles-in-ns0.gz
-gunzip -c enwiki-latest-all-titles-in-ns0.gz | hadoop fs -put - count_example/wiki_titles
+# EXTRA (wikipedia titles)
+wget http://download.wikimedia.org/enwiki/latest/enwiki-latest-all-titles-in-ns0.gz -O - | gunzip -c | hadoop fs -put - count_example/wiki_titles
 hadoop jar $HADOOP_HOME/hadoop-streaming.jar $PARAMS -mapper mapper.py -reducer reducer_numsort.py -input count_example/wiki_titles -output count_example/wiki_titles_out -file mapper.py -file reducer_numsort.py
 hadoop fs -cat count_example/wiki_titles_out/* | head
+
+# EXTRA x2 (wikipedia articles)
+wget http://download.wikimedia.org/enwiki/latest/enwiki-latest-pages-articles.xml.bz2 -O - | bunzip2 -c | hadoop fs -put - count_example/wiki_articles
+hadoop jar $HADOOP_HOME/hadoop-streaming.jar $PARAMS -mapper mapper.py -reducer reducer_numsort.py -input count_example/wiki_articles -output count_example/wiki_articles_out -file mapper.py -file reducer_numsort.py
+hadoop fs -cat count_example/wiki_articles_out/* | head
 
 # cleanup
 hadoop fs -rmr count_example
